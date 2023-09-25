@@ -29,9 +29,20 @@ export default function AppEntry() {
 			// } else {
 			// 	appStore.toggleThemeMode("light");
 			// }
-			appStore.toggleThemeMode("light");
+			appStore.toggleThemeMode("dark");
 		} catch (err) {
 			__DEV__ && console.log("Something went wrong loading user's theme", err);
+		} finally {
+			_getUserName();
+		}
+	};
+
+	const _getUserName = async () => {
+		try {
+			const value = await AsyncStorage.getItem("username");
+			if (value !== null) appStore.setUserName(value);
+		} catch (err) {
+			__DEV__ && console.log("Something went wrong loading username", err);
 		} finally {
 			setTimeout(() => {
 				appStore.setInitApp(false);

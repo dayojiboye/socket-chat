@@ -2,14 +2,17 @@ import { darkTheme, lightTheme } from "../config/theme";
 import dummyChats from "../data";
 
 export type RootStackParamList = {
+	Home: undefined;
 	Chats: undefined;
 };
 
 export type AppContextValue = {
 	themeMode: string;
 	isInitializing: boolean;
+	username: string;
 	toggleThemeMode: (value: string) => void;
 	setInitApp: (value: boolean) => void;
+	setUserName: (value: string) => void;
 };
 
 export type ThemeType = typeof lightTheme | typeof darkTheme;

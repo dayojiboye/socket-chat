@@ -55,7 +55,7 @@ export default function CustomButton({
 			disabled={disabled || isLoading}
 			style={[
 				styles.buttonStyle,
-				{ backgroundColor: disabled || isLoading ? theme.faded : theme.orange },
+				{ backgroundColor: disabled || isLoading ? theme.faded : theme.blue },
 				style,
 			]}
 			onPress={onPress}

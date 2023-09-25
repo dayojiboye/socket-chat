@@ -1,37 +1,37 @@
 const dummyChats = [
 	{
 		id: "1",
-		name: "John",
+		name: "Novu Hangouts",
 		messages: [
 			{
 				id: "1a",
-				text: "Hello bro, welcome!",
+				text: "Hello guys, welcome!",
 				time: "07:50",
-				user: "John",
+				user: "Tomer",
 			},
 			{
 				id: "1b",
-				text: "How are you?",
+				text: "Hi Tomer, thank you! 😇",
 				time: "08:50",
-				user: "John",
+				user: "David",
 			},
 		],
 	},
 	{
 		id: "2",
-		name: "Anna",
+		name: "Hacksquad Team 1",
 		messages: [
 			{
 				id: "2a",
-				text: "Hi",
+				text: "Guys, who's awake? 🙏🏽",
 				time: "12:50",
-				user: "Anna",
+				user: "Team Leader",
 			},
 			{
 				id: "2b",
-				text: "What's up?",
+				text: "What's up? 🧑🏻‍💻",
 				time: "03:50",
-				user: "Anna",
+				user: "Victoria",
 			},
 		],
 	},

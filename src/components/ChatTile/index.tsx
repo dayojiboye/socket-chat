@@ -20,9 +20,9 @@ export default function ChatTile({ item, style, onPress }: Props) {
 	}, []);
 
 	return (
-		<TouchableOpacity style={[styles.container, style]} onPress={onPress}>
+		<TouchableOpacity activeOpacity={0.8} style={[styles.container, style]} onPress={onPress}>
 			<View style={{ paddingVertical: 20 }}>
-				<UserCircleIcon color={theme.violet} size={36} />
+				<UserCircleIcon color={theme.blue} size={36} />
 			</View>
 			<View style={styles.contentContainer}>
 				<View style={{ gap: 4, flex: 1 }}>

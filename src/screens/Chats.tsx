@@ -20,11 +20,11 @@ export default function Chats({ navigation }: Props) {
 			headerTitleAlign: "left",
 			headerTitleStyle: styles.headerTitle,
 			headerLeftContainerStyle: { paddingLeft: 0 },
-			headerRight: (props) => (
-				<TouchableOpacity>
-					<PencilSquareIcon size={30} color={theme.violet} />
-				</TouchableOpacity>
-			),
+			// headerRight: (props) => (
+			// 	<TouchableOpacity>
+			// 		<PencilSquareIcon size={30} color={theme.violet} />
+			// 	</TouchableOpacity>
+			// ),
 			headerStyle: { backgroundColor: theme.background },
 		});
 	}, [navigation]);

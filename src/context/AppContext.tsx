@@ -10,16 +10,27 @@ const _storeUserPreferredTheme = async (value: string) => {
 	}
 };
 
+const _storeUserName = async (value: string) => {
+	try {
+		await AsyncStorage.setItem("username", value);
+	} catch (err) {
+		__DEV__ && console.log("Something went wrong saving username", err);
+	}
+};
+
 type AppContextAction =
 	| { type: "toggle_theme_mode"; payload: string }
-	| { type: "init_app"; payload: boolean };
+	| { type: "init_app"; payload: boolean }
+	| { type: "set_user_name"; payload: string };
 
 const initialState: {
 	themeMode: string;
 	isInitializing: boolean;
+	username: string;
 } = {
 	themeMode: "light",
 	isInitializing: true,
+	username: "",
 };
 
 export const AppContext = React.createContext({} as AppContextValue);
@@ -36,6 +47,12 @@ const reducer = (state: typeof initialState, action: AppContextAction) => {
 			return {
 				...state,
 				isInitializing: action.payload,
+			};
+
+		case "set_user_name":
+			return {
+				...state,
+				username: action.payload,
 			};
 
 		default:
@@ -56,13 +73,20 @@ export default function AppProvider(props: React.PropsWithChildren<{}>) {
 			dispatch({ type: "init_app", payload: value });
 		};
 
+		const setUserName = (value: string) => {
+			dispatch({ type: "set_user_name", payload: value });
+			_storeUserName(value);
+		};
+
 		return {
 			themeMode: state.themeMode,
 			isInitializing: state.isInitializing,
+			username: state.username,
 			toggleThemeMode,
 			setInitApp,
+			setUserName,
 		};
-	}, [state.themeMode, state.isInitializing]);
+	}, [state.themeMode, state.isInitializing, state.username]);
 
 	return <AppContext.Provider value={value} {...props} />;
 }
