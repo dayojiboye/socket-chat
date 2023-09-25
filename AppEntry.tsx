@@ -22,13 +22,14 @@ export default function AppEntry() {
 	const _getUserPreferredTheme = async () => {
 		try {
 			const value = await AsyncStorage.getItem("theme");
-			if (deviceTheme && value === null) {
-				appStore.toggleThemeMode(deviceTheme);
-			} else if (value !== null) {
-				appStore.toggleThemeMode(value);
-			} else {
-				appStore.toggleThemeMode("light");
-			}
+			// if (deviceTheme && value === null) {
+			// 	appStore.toggleThemeMode(deviceTheme);
+			// } else if (value !== null) {
+			// 	appStore.toggleThemeMode(value);
+			// } else {
+			// 	appStore.toggleThemeMode("light");
+			// }
+			appStore.toggleThemeMode("light");
 		} catch (err) {
 			__DEV__ && console.log("Something went wrong loading user's theme", err);
 		} finally {

@@ -10,8 +10,6 @@ import {
 	StyleSheet,
 } from "react-native";
 import React from "react";
-import Animated, { useSharedValue, withTiming, useAnimatedStyle } from "react-native-reanimated";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { ThemeType } from "../../types";
 import useStyles from "../../hooks/useStyles";
 
@@ -50,56 +48,35 @@ export default function CustomButton({
 	const { theme, styles } = useStyles(createStyles);
 	const LeftIcon = leftIcon;
 	const RightIcon = rightIcon;
-	const pressed = useSharedValue(false);
-
-	const tap = Gesture.Tap()
-		.onBegin(() => {
-			if (disabled || isLoading) return;
-			pressed.value = true;
-		})
-		.onFinalize(() => {
-			pressed.value = false;
-		});
-
-	const animatedStyles = useAnimatedStyle(() => ({
-		transform: [{ scale: withTiming(pressed.value ? 0.97 : 1) }],
-	}));
 
 	return (
-		<GestureDetector gesture={tap}>
-			<Animated.View style={[{ width: "100%" }, animatedStyles, containerStyle]}>
-				<TouchableOpacity
-					activeOpacity={activeOpacity}
-					disabled={disabled || isLoading}
-					style={[
-						styles.buttonStyle,
-						{ backgroundColor: disabled || isLoading ? theme.disabled : theme.green },
-						style,
-					]}
-					onPress={onPress}
-					onLongPress={onLongPress}
-					{...props}
-				>
-					{isLoading ? (
-						<ActivityIndicator size="small" color={theme.white} />
-					) : (
-						<>
-							{leftIcon && <LeftIcon {...leftIconProps} />}
-							<Text style={[styles.labelStyle, labelStyle]}>{label}</Text>
-							{rightIcon && <RightIcon {...rightIconProps} />}
-						</>
-					)}
-				</TouchableOpacity>
-			</Animated.View>
-		</GestureDetector>
+		<TouchableOpacity
+			activeOpacity={activeOpacity}
+			disabled={disabled || isLoading}
+			style={[
+				styles.buttonStyle,
+				{ backgroundColor: disabled || isLoading ? theme.faded : theme.orange },
+				style,
+			]}
+			onPress={onPress}
+			onLongPress={onLongPress}
+			{...props}
+		>
+			{isLoading ? (
+				<ActivityIndicator size="small" color={theme.white} />
+			) : (
+				<>
+					{leftIcon && <LeftIcon {...leftIconProps} />}
+					<Text style={[styles.labelStyle, labelStyle]}>{label}</Text>
+					{rightIcon && <RightIcon {...rightIconProps} />}
+				</>
+			)}
+		</TouchableOpacity>
 	);
 }
 
 const createStyles = (theme: ThemeType) =>
 	StyleSheet.create({
-		containerStyle: {
-			width: "100%",
-		},
 		buttonStyle: {
 			width: "100%",
 			height: 50,

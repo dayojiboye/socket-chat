@@ -1,23 +1,25 @@
 import { ThemeType } from "../types";
 
 const commonValues = {
-	green: "#4CAF4F",
-	inputBg: "#FAF0D3",
 	white: "#fff",
-	disabled: "#949191",
-	black: "#000000",
+	faded: "#ccc",
+	black: "#281C2D",
+	border: "rgb(240, 239, 240)",
+	purpleHaze: "#BEAFC2",
+	purple: "#695E93",
+	violet: "#8155BA",
 	// add more
 };
 
 export const lightTheme = {
 	...commonValues,
-	background: "rgb(242, 242, 242)",
-	text: "#000",
+	background: "#fff",
+	text: "#281C2D",
 };
 
 export const darkTheme = {
 	...commonValues,
-	background: "rgb(0, 0, 0)",
+	background: "#281C2D",
 	text: "#fff",
 };
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import Home from "../screens/Home";
 import { RootStackParamList } from "../types";
+import Chats from "../screens/Chats";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -13,12 +13,11 @@ export default function AppRoutes() {
 				headerTitleAlign: "center",
 				headerShadowVisible: false,
 				headerMode: "screen",
-				headerShown: false,
 				headerLeftContainerStyle: { paddingLeft: 20 },
 				headerRightContainerStyle: { paddingHorizontal: 20 },
 			}}
 		>
-			<Stack.Screen name="Home" component={Home} />
+			<Stack.Screen name="Chats" component={Chats} />
 		</Stack.Navigator>
 	);
 }
