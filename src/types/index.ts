@@ -4,6 +4,7 @@ import dummyChats from "../data";
 export type RootStackParamList = {
 	Home: undefined;
 	Chats: undefined;
+	ChatScreen: { name: string; id: string };
 };
 
 export type AppContextValue = {

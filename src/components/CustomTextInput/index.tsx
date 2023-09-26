@@ -11,12 +11,12 @@ import React from "react";
 import { StyleProp } from "react-native";
 import { ThemeType } from "../../types";
 import useStyles from "../../hooks/useStyles";
-import Icon from "react-native-vector-icons/Feather";
+import { PaperAirplaneIcon } from "react-native-heroicons/solid";
 
 type Props = {
 	onChangeText: (text: string) => void;
 	placeholder?: string;
-	isPassword?: boolean;
+	isChat?: boolean;
 	outerContainerStyle?: StyleProp<ViewStyle>;
 	containerStyle?: StyleProp<ViewStyle>;
 	inputStyle?: StyleProp<TextStyle>;
@@ -25,12 +25,13 @@ type Props = {
 	leftIconProps?: any;
 	rightIconProps?: any;
 	error?: boolean | string;
+	onSend?: () => void;
 } & TextInputProps;
 
 export default function CustomTextInput({
 	onChangeText,
 	placeholder,
-	isPassword = false,
+	isChat = false,
 	outerContainerStyle,
 	containerStyle,
 	inputStyle,
@@ -38,18 +39,27 @@ export default function CustomTextInput({
 	rightIcon,
 	leftIconProps,
 	rightIconProps,
+	onSend,
 	...props
 }: Props) {
 	const { styles, theme } = useStyles(createStyles);
 	const refInput = React.useRef<TextInput>(null);
-	const [secureText, setSecureText] = React.useState<boolean>(true);
 
 	const LeftIcon = leftIcon;
 	const RightIcon = rightIcon;
 
 	return (
 		<View style={[styles.outerContainer, outerContainerStyle]}>
-			<View style={[styles.container, containerStyle]}>
+			<View
+				style={[
+					styles.container,
+					{
+						paddingLeft: 16,
+						paddingRight: isChat ? 0 : 16,
+					},
+					containerStyle,
+				]}
+			>
 				{leftIcon && <LeftIcon {...leftIconProps} />}
 				<TextInput
 					ref={refInput}
@@ -60,19 +70,16 @@ export default function CustomTextInput({
 					selectionColor={theme.faded}
 					style={[styles.textInput, inputStyle]}
 					onChangeText={onChangeText}
-					secureTextEntry={isPassword ? secureText : false}
 					{...props}
 				/>
-				{isPassword && (
+				{isChat && (
 					<TouchableOpacity
-						activeOpacity={0.8}
-						style={styles.passwordContainer}
+						style={styles.sendButton}
 						onPress={() => {
-							// refInput?.current?.focus();
-							setSecureText(!secureText);
+							onSend?.();
 						}}
 					>
-						<Icon name={secureText ? "eye" : "eye-off"} size={20} color={theme.faded} />
+						<PaperAirplaneIcon size={20} color={theme.blue} />
 					</TouchableOpacity>
 				)}
 				{rightIcon && <RightIcon {...rightIconProps} />}
@@ -92,7 +99,6 @@ const createStyles = (theme: ThemeType) =>
 			alignItems: "center",
 			width: "100%",
 			height: 60,
-			paddingHorizontal: 16,
 			gap: 16,
 		},
 		textInput: {
@@ -102,7 +108,7 @@ const createStyles = (theme: ThemeType) =>
 			height: "100%",
 			backgroundColor: "transparent",
 		},
-		passwordContainer: {
+		sendButton: {
 			height: "100%",
 			justifyContent: "center",
 			alignItems: "center",

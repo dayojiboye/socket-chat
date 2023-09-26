@@ -37,7 +37,13 @@ export default function Chats({ navigation }: Props) {
 					scrollEnabled={dummyChats.length > 0}
 				>
 					{dummyChats.length > 0 ? (
-						dummyChats.map((chat) => <ChatTile key={chat.id} item={chat} onPress={() => {}} />)
+						dummyChats.map((chat) => (
+							<ChatTile
+								key={chat.id}
+								item={chat}
+								onPress={() => navigation.navigate("ChatScreen", { name: chat.name, id: chat.id })}
+							/>
+						))
 					) : (
 						<View style={styles.emptyView}>
 							<Text style={styles.emptyText}>No chat</Text>
