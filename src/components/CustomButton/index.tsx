@@ -35,7 +35,7 @@ export default function CustomButton({
 	containerStyle,
 	style,
 	labelStyle,
-	activeOpacity = 0.8,
+	activeOpacity = 0.7,
 	onPress,
 	leftIcon,
 	rightIcon,

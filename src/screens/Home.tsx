@@ -26,7 +26,11 @@ export default function Home({ navigation }: Props) {
 		<>
 			<CustomStatusBar />
 			<SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
-				<KeyboardAwareScrollView style={{ flex: 1 }} contentContainerStyle={styles.container}>
+				<KeyboardAwareScrollView
+					style={{ flex: 1 }}
+					contentContainerStyle={styles.container}
+					keyboardShouldPersistTaps="handled"
+				>
 					<Text style={styles.text}>Set a username</Text>
 					<CustomTextInput
 						outerContainerStyle={{ marginTop: 48 }}
