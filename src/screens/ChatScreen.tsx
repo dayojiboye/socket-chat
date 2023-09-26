@@ -1,10 +1,10 @@
 import {
-	Animated,
 	FlatList,
 	StyleSheet,
 	TouchableOpacity,
 	View,
 	KeyboardAvoidingView,
+	Platform,
 } from "react-native";
 import React from "react";
 import { ChatMessage, RootStackParamList, ThemeType } from "../types";
@@ -16,6 +16,7 @@ import MessageTile from "../components/MessageTile";
 import useStore from "../hooks/useStore";
 import CustomTextInput from "../components/CustomTextInput";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "@react-navigation/elements";
 
 type Props = StackScreenProps<RootStackParamList, "ChatScreen">;
 
@@ -25,6 +26,7 @@ export default function ChatScreen({ navigation, route }: Props) {
 	const [message, setMessage] = React.useState<string>("");
 	const { username } = useStore();
 	const inset = useSafeAreaInsets();
+	const headerHeight = useHeaderHeight();
 
 	const [chatMessages, setChatMessages] = React.useState<ChatMessage[]>([
 		{
@@ -75,24 +77,27 @@ export default function ChatScreen({ navigation, route }: Props) {
 			<KeyboardAvoidingView
 				style={{ flex: 1, backgroundColor: theme.background }}
 				behavior="padding"
-				keyboardVerticalOffset={80}
+				keyboardVerticalOffset={Platform.OS === "android" ? -200 : headerHeight}
+				enabled
 			>
 				<FlatList
 					data={chatMessages}
 					keyExtractor={(item) => item.id}
 					renderItem={({ item }) => <MessageTile chat={item} />}
-					style={{ flex: 1, backgroundColor: theme.background }}
+					style={{ backgroundColor: theme.background }}
 					contentContainerStyle={styles.container}
 					scrollEnabled={chatMessages.length > 0}
 				/>
 
 				<View style={[styles.footer, { paddingBottom: inset.bottom }]}>
 					<CustomTextInput
-						isChat={message.length > 0}
+						// multiline
+						isChat={message.trim().length > 0}
 						placeholder="Start typing..."
 						value={message}
 						onChangeText={(text) => setMessage(text)}
 						onSend={handleNewMessage}
+						// textAlignVertical="top"
 					/>
 				</View>
 			</KeyboardAvoidingView>

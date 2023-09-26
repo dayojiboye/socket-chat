@@ -1,6 +1,6 @@
 import React from "react";
 import { useColorScheme } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { DarkTheme, NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -82,7 +82,7 @@ export default function AppEntry() {
 		<SafeAreaProvider onLayout={onLayoutRootView}>
 			<GestureHandlerRootView style={{ flex: 1 }}>
 				<BottomSheetModalProvider>
-					<NavigationContainer>
+					<NavigationContainer theme={DarkTheme}>
 						<RootSiblingParent>
 							<AppRoutes />
 						</RootSiblingParent>

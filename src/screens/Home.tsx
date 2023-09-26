@@ -55,7 +55,7 @@ export default function Home({ navigation }: Props) {
 const createStyles = (theme: ThemeType) =>
 	StyleSheet.create({
 		container: {
-			paddingTop: 20,
+			paddingTop: 28,
 			paddingBottom: 50,
 			paddingHorizontal: 20,
 		},

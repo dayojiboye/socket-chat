@@ -13,6 +13,7 @@ import { appState } from "../enums";
 import axios from "axios";
 import { getErrorMessage } from "../utils/helpers";
 import socket from "../utils/socket";
+import dummyChats from "../data";
 
 type Props = StackScreenProps<RootStackParamList>;
 
@@ -64,12 +65,12 @@ export default function Chats({ navigation }: Props) {
 				<ScrollView
 					style={{ flex: 1, backgroundColor: theme.background }}
 					contentContainerStyle={styles.container}
-					scrollEnabled={groups.length > 0}
+					// scrollEnabled={groups.length > 0}
 				>
 					{currentState === appState.LOADING ? (
 						<ActivityIndicator animating size="large" />
-					) : groups.length > 0 ? (
-						groups.map((chat) => (
+					) : dummyChats.length > 0 ? (
+						dummyChats.map((chat) => (
 							<ChatTile
 								key={chat.id}
 								item={chat}
