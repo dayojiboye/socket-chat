@@ -6,7 +6,6 @@ import CustomStatusBar from "../components/CustomStatusBar";
 import { StackScreenProps } from "@react-navigation/stack";
 import { ScrollView } from "react-native";
 import ChatTile from "../components/ChatTile";
-import dummyChats from "../data";
 import { PlusIcon } from "react-native-heroicons/solid";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import CreateGroupBottomSheet from "../components/BottomSheets/CreateGroup";
@@ -65,7 +64,7 @@ export default function Chats({ navigation }: Props) {
 				<ScrollView
 					style={{ flex: 1, backgroundColor: theme.background }}
 					contentContainerStyle={styles.container}
-					scrollEnabled={dummyChats.length > 0}
+					scrollEnabled={groups.length > 0}
 				>
 					{currentState === appState.LOADING ? (
 						<ActivityIndicator animating size="large" />

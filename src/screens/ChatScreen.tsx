@@ -1,4 +1,11 @@
-import { FlatList, KeyboardAvoidingView, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+	Animated,
+	FlatList,
+	StyleSheet,
+	TouchableOpacity,
+	View,
+	KeyboardAvoidingView,
+} from "react-native";
 import React from "react";
 import { ChatMessage, RootStackParamList, ThemeType } from "../types";
 import useStyles from "../hooks/useStyles";
@@ -65,25 +72,30 @@ export default function ChatScreen({ navigation, route }: Props) {
 	return (
 		<>
 			<CustomStatusBar />
-
-			<FlatList
-				data={chatMessages}
-				keyExtractor={(item) => item.id}
-				renderItem={({ item }) => <MessageTile chat={item} />}
+			<KeyboardAvoidingView
 				style={{ flex: 1, backgroundColor: theme.background }}
-				contentContainerStyle={styles.container}
-				scrollEnabled={chatMessages.length > 0}
-			/>
-
-			<View style={[styles.footer, { paddingBottom: inset.bottom + 10 }]}>
-				<CustomTextInput
-					isChat={message.length > 0}
-					placeholder="Start typing..."
-					value={message}
-					onChangeText={(text) => setMessage(text)}
-					onSend={handleNewMessage}
+				behavior="padding"
+				keyboardVerticalOffset={80}
+			>
+				<FlatList
+					data={chatMessages}
+					keyExtractor={(item) => item.id}
+					renderItem={({ item }) => <MessageTile chat={item} />}
+					style={{ flex: 1, backgroundColor: theme.background }}
+					contentContainerStyle={styles.container}
+					scrollEnabled={chatMessages.length > 0}
 				/>
-			</View>
+
+				<View style={[styles.footer, { paddingBottom: inset.bottom }]}>
+					<CustomTextInput
+						isChat={message.length > 0}
+						placeholder="Start typing..."
+						value={message}
+						onChangeText={(text) => setMessage(text)}
+						onSend={handleNewMessage}
+					/>
+				</View>
+			</KeyboardAvoidingView>
 		</>
 	);
 }
