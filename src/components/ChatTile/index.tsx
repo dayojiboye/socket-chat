@@ -28,7 +28,7 @@ export default function ChatTile({ item, style, onPress }: Props) {
 				<View style={{ gap: 4, flex: 1 }}>
 					<Text style={styles.recipient}>{item.name}</Text>
 					<Text numberOfLines={2} style={styles.message}>
-						{messages?.user}: {messages?.text}
+						{messages?.user ? messages.user + ":" : null} {messages?.text}
 					</Text>
 				</View>
 				<Text style={styles.timestamp}>

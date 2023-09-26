@@ -65,29 +65,25 @@ export default function ChatScreen({ navigation, route }: Props) {
 	return (
 		<>
 			<CustomStatusBar />
-			<KeyboardAvoidingView
-				behavior="padding"
-				keyboardVerticalOffset={50}
+
+			<FlatList
+				data={chatMessages}
+				keyExtractor={(item) => item.id}
+				renderItem={({ item }) => <MessageTile chat={item} />}
 				style={{ flex: 1, backgroundColor: theme.background }}
-			>
-				<FlatList
-					data={chatMessages}
-					keyExtractor={(item) => item.id}
-					renderItem={({ item }) => <MessageTile chat={item} />}
-					style={{ flex: 1 }}
-					contentContainerStyle={styles.container}
-					scrollEnabled={chatMessages.length > 0}
+				contentContainerStyle={styles.container}
+				scrollEnabled={chatMessages.length > 0}
+			/>
+
+			<View style={[styles.footer, { paddingBottom: inset.bottom + 10 }]}>
+				<CustomTextInput
+					isChat={message.length > 0}
+					placeholder="Start typing..."
+					value={message}
+					onChangeText={(text) => setMessage(text)}
+					onSend={handleNewMessage}
 				/>
-				<View style={[styles.footer, { paddingBottom: inset.bottom + 10 }]}>
-					<CustomTextInput
-						isChat={message.length > 0}
-						placeholder="Start typing..."
-						value={message}
-						onChangeText={(text) => setMessage(text)}
-						onSend={handleNewMessage}
-					/>
-				</View>
-			</KeyboardAvoidingView>
+			</View>
 		</>
 	);
 }
@@ -103,9 +99,11 @@ const createStyles = (theme: ThemeType) =>
 			paddingTop: 20,
 			paddingBottom: 50,
 			paddingHorizontal: 20,
+			flexGrow: 1,
 		},
 		footer: {
 			paddingHorizontal: 20,
 			paddingVertical: 16,
+			backgroundColor: theme.background,
 		},
 	});

@@ -12,6 +12,7 @@ import { showToast } from "./src/utils/helpers";
 import { toastType } from "./src/enums";
 import AppRoutes from "./src/config/routes";
 import useStore from "./src/hooks/useStore";
+import socket from "./src/utils/socket";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -57,6 +58,9 @@ export default function AppEntry() {
 	React.useEffect(() => {
 		_getUserPreferredTheme();
 		// Make any initial API call here like fetching signed in user's data
+		return () => {
+			socket.disconnect();
+		};
 	}, []);
 
 	// React.useEffect(() => {

@@ -7,14 +7,16 @@ import { ThemeType } from "../../types";
 import useStyles from "../../hooks/useStyles";
 import CustomTextInput from "../CustomTextInput";
 import CustomButton from "../CustomButton";
+import socket from "../../utils/socket";
 
 type Props = {};
 
-const CreateRoomBottomSheet = React.forwardRef(
+const CreateGroupBottomSheet = React.forwardRef(
 	({}: Props, ref: React.Ref<BottomSheetModalMethods>) => {
 		const closeBottomsheet = React.useCallback(() => {
 			// @ts-ignore
 			ref?.current?.close();
+			setGroupName("");
 		}, []);
 
 		const defaultSnapPoints = ["45%"];
@@ -23,8 +25,8 @@ const CreateRoomBottomSheet = React.forwardRef(
 		const [snapPoints, setSnapPoints] = React.useState(defaultSnapPoints);
 
 		const handleCreateRoom = () => {
+			socket.emit("createGroup", groupName);
 			closeBottomsheet();
-			setGroupName("");
 		};
 
 		React.useEffect(() => {
@@ -62,7 +64,11 @@ const CreateRoomBottomSheet = React.forwardRef(
 					contentContainerStyle={styles.container}
 					keyboardShouldPersistTaps="handled"
 				>
-					<CustomTextInput placeholder="Group name" onChangeText={(text) => setGroupName(text)} />
+					<CustomTextInput
+						autoFocus
+						placeholder="Group name"
+						onChangeText={(text) => setGroupName(text)}
+					/>
 					<CustomButton label="Create" disabled={groupName.length < 3} onPress={handleCreateRoom} />
 				</ScrollView>
 			</AppBottomSheet>
@@ -70,7 +76,7 @@ const CreateRoomBottomSheet = React.forwardRef(
 	}
 );
 
-export default CreateRoomBottomSheet;
+export default CreateGroupBottomSheet;
 
 const createStyles = (theme: ThemeType) =>
 	StyleSheet.create({

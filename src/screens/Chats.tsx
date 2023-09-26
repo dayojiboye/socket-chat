@@ -1,6 +1,6 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { RootStackParamList, ThemeType } from "../types";
+import { ChatItemsType, RootStackParamList, ThemeType } from "../types";
 import useStyles from "../hooks/useStyles";
 import CustomStatusBar from "../components/CustomStatusBar";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -9,13 +9,34 @@ import ChatTile from "../components/ChatTile";
 import dummyChats from "../data";
 import { PlusIcon } from "react-native-heroicons/solid";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import CreateRoomBottomSheet from "../components/BottomSheets/CreateRoom";
+import CreateGroupBottomSheet from "../components/BottomSheets/CreateGroup";
+import { appState } from "../enums";
+import axios from "axios";
+import { getErrorMessage } from "../utils/helpers";
+import socket from "../utils/socket";
 
 type Props = StackScreenProps<RootStackParamList>;
 
 export default function Chats({ navigation }: Props) {
 	const { styles, theme } = useStyles(createStyles);
-	const createRoomBottomSheetRef = React.useRef<BottomSheetModal>(null);
+	const createGroupBottomSheetRef = React.useRef<BottomSheetModal>(null);
+	const [groups, setGroups] = React.useState<ChatItemsType>([]);
+	const [currentState, setCurrentState] = React.useState<appState>(appState.IDLE);
+
+	const _fetchGroups = async () => {
+		setCurrentState(appState.LOADING);
+		try {
+			const response = await axios.get("http://localhost:4000/api");
+			const { status, data } = response || {};
+			if (status === 200) {
+				setCurrentState(appState.SUCCESS);
+				setGroups(data);
+			}
+		} catch (err) {
+			setCurrentState(appState.ERROR);
+			__DEV__ && console.log(getErrorMessage(err));
+		}
+	};
 
 	React.useEffect(() => {
 		navigation.setOptions({
@@ -27,6 +48,16 @@ export default function Chats({ navigation }: Props) {
 		});
 	}, [navigation]);
 
+	React.useEffect(() => {
+		_fetchGroups();
+	}, []);
+
+	React.useEffect(() => {
+		socket.on("groupsList", (groups) => {
+			setGroups(groups);
+		});
+	}, [socket]);
+
 	return (
 		<>
 			<CustomStatusBar />
@@ -36,8 +67,10 @@ export default function Chats({ navigation }: Props) {
 					contentContainerStyle={styles.container}
 					scrollEnabled={dummyChats.length > 0}
 				>
-					{dummyChats.length > 0 ? (
-						dummyChats.map((chat) => (
+					{currentState === appState.LOADING ? (
+						<ActivityIndicator animating size="large" />
+					) : groups.length > 0 ? (
+						groups.map((chat) => (
 							<ChatTile
 								key={chat.id}
 								item={chat}
@@ -53,12 +86,12 @@ export default function Chats({ navigation }: Props) {
 				<TouchableOpacity
 					activeOpacity={0.6}
 					style={styles.floatingButton}
-					onPress={() => createRoomBottomSheetRef.current?.present()}
+					onPress={() => createGroupBottomSheetRef.current?.present()}
 				>
 					<PlusIcon color={theme.blue} size={36} />
 				</TouchableOpacity>
 			</View>
-			<CreateRoomBottomSheet ref={createRoomBottomSheetRef} />
+			<CreateGroupBottomSheet ref={createGroupBottomSheetRef} />
 		</>
 	);
 }
