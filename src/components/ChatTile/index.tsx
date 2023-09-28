@@ -3,7 +3,7 @@ import React from "react";
 import { ChatItemType, ChatMessage, ThemeType } from "../../types";
 import useStyles from "../../hooks/useStyles";
 import { UserCircleIcon } from "react-native-heroicons/outline";
-import { formatDistance } from "date-fns";
+import TimeAgo from "javascript-time-ago";
 
 type Props = {
 	item: ChatItemType;
@@ -15,9 +15,11 @@ export default function ChatTile({ item, style, onPress }: Props) {
 	const { styles, theme } = useStyles(createStyles);
 	const [messages, setMessages] = React.useState<ChatMessage>();
 
+	const timeAgo = new TimeAgo("en-US");
+
 	React.useLayoutEffect(() => {
 		setMessages(item.messages[item.messages.length - 1]);
-	}, []);
+	}, [item]);
 
 	return (
 		<TouchableOpacity style={[styles.container, style]} onPress={onPress}>
@@ -31,12 +33,9 @@ export default function ChatTile({ item, style, onPress }: Props) {
 						{messages?.user ? messages.user + ":" : null} {messages?.text}
 					</Text>
 				</View>
-				<Text style={styles.timestamp}>
-					{/* {formatDistance(timestamp, new Date(), {
-						addSuffix: true,
-					})} */}
-					{messages?.time}
-				</Text>
+				{messages?.time ? (
+					<Text style={styles.timestamp}>{timeAgo.format(new Date(messages.time))}</Text>
+				) : null}
 			</View>
 		</TouchableOpacity>
 	);

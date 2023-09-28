@@ -4,10 +4,13 @@ import { RootStackParamList } from "../types";
 import Chats from "../screens/Chats";
 import Home from "../screens/Home";
 import ChatScreen from "../screens/ChatScreen";
+import useStore from "../hooks/useStore";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function AppRoutes() {
+	const { username } = useStore();
+
 	return (
 		<Stack.Navigator
 			screenOptions={{
@@ -19,9 +22,14 @@ export default function AppRoutes() {
 				headerRightContainerStyle: { paddingRight: 20 },
 			}}
 		>
-			<Stack.Screen name="Home" component={Home} />
-			<Stack.Screen name="Chats" component={Chats} />
-			<Stack.Screen name="ChatScreen" component={ChatScreen} />
+			{!username ? (
+				<Stack.Screen name="Home" component={Home} />
+			) : (
+				<>
+					<Stack.Screen name="Chats" component={Chats} />
+					<Stack.Screen name="ChatScreen" component={ChatScreen} />
+				</>
+			)}
 		</Stack.Navigator>
 	);
 }

@@ -13,6 +13,8 @@ import { toastType } from "./src/enums";
 import AppRoutes from "./src/config/routes";
 import useStore from "./src/hooks/useStore";
 import socket from "./src/utils/socket";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -57,9 +59,12 @@ export default function AppEntry() {
 
 	React.useEffect(() => {
 		_getUserPreferredTheme();
+		TimeAgo.addDefaultLocale(en);
+		socket.connect();
 		// Make any initial API call here like fetching signed in user's data
 		return () => {
-			socket.disconnect();
+			// socket.disconnect();
+			socket.emit("disconnect");
 		};
 	}, []);
 

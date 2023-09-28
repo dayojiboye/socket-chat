@@ -3,6 +3,7 @@ import React from "react";
 import { ChatMessage, ThemeType } from "../../types";
 import useStyles from "../../hooks/useStyles";
 import useStore from "../../hooks/useStore";
+import TimeAgo from "javascript-time-ago";
 
 type Props = {
 	chat: ChatMessage;
@@ -13,10 +14,11 @@ export default function MessageTile({ chat }: Props) {
 	const { username } = useStore();
 
 	const isMe: boolean = chat.user === username;
+	const timeAgo = new TimeAgo("en-US");
 
 	return (
 		<View style={[styles.container, { alignItems: isMe ? "flex-end" : "flex-start" }]}>
-			<Text style={styles.username}>{chat.user}</Text>
+			<Text style={styles.username}>{isMe ? "Me" : chat.user}</Text>
 			<View
 				style={[
 					styles.chatBubble,
@@ -30,7 +32,7 @@ export default function MessageTile({ chat }: Props) {
 			>
 				<Text style={styles.text}>{chat.text}</Text>
 			</View>
-			<Text style={styles.username}>{chat.time}</Text>
+			<Text style={styles.username}>{timeAgo.format(new Date(chat.time))}</Text>
 		</View>
 	);
 }

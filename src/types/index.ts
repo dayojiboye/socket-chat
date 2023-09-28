@@ -1,5 +1,4 @@
 import { darkTheme, lightTheme } from "../config/theme";
-import dummyChats from "../data";
 
 export type RootStackParamList = {
 	Home: undefined;
@@ -18,7 +17,7 @@ export type AppContextValue = {
 
 export type ThemeType = typeof lightTheme | typeof darkTheme;
 
-export type ChatMessage = { id: string; text: string; time: string; user: string };
+export type ChatMessage = { id: string; text: string; time: Date; user: string };
 
 export type ChatItemType = {
 	id: string;

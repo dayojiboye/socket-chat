@@ -12,6 +12,7 @@ import { StyleProp } from "react-native";
 import { ThemeType } from "../../types";
 import useStyles from "../../hooks/useStyles";
 import { PaperAirplaneIcon } from "react-native-heroicons/solid";
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 
 type Props = {
 	onChangeText: (text: string) => void;
@@ -26,6 +27,7 @@ type Props = {
 	rightIconProps?: any;
 	error?: boolean | string;
 	onSend?: () => void;
+	isBottomSheet?: boolean;
 } & TextInputProps;
 
 export default function CustomTextInput({
@@ -40,13 +42,16 @@ export default function CustomTextInput({
 	leftIconProps,
 	rightIconProps,
 	onSend,
+	isBottomSheet,
 	...props
 }: Props) {
 	const { styles, theme } = useStyles(createStyles);
-	const refInput = React.useRef<TextInput>(null);
+	const refInput = React.useRef(null);
 
 	const LeftIcon = leftIcon;
 	const RightIcon = rightIcon;
+
+	const InputComponent = isBottomSheet ? BottomSheetTextInput : TextInput;
 
 	return (
 		<View style={[styles.outerContainer, outerContainerStyle]}>
@@ -61,7 +66,7 @@ export default function CustomTextInput({
 				]}
 			>
 				{leftIcon && <LeftIcon {...leftIconProps} />}
-				<TextInput
+				<InputComponent
 					ref={refInput}
 					placeholder={placeholder}
 					placeholderTextColor={theme.faded}

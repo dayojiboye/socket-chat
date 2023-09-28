@@ -5,6 +5,7 @@ import {
 	View,
 	KeyboardAvoidingView,
 	Platform,
+	Dimensions,
 } from "react-native";
 import React from "react";
 import { ChatMessage, RootStackParamList, ThemeType } from "../types";
@@ -16,9 +17,13 @@ import MessageTile from "../components/MessageTile";
 import useStore from "../hooks/useStore";
 import CustomTextInput from "../components/CustomTextInput";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useHeaderHeight } from "@react-navigation/elements";
+// import { useHeaderHeight } from "@react-navigation/elements";
+import socket from "../utils/socket";
 
 type Props = StackScreenProps<RootStackParamList, "ChatScreen">;
+
+const WIDTH = Dimensions.get("window").width;
+const HEIGHT = Dimensions.get("window").height;
 
 export default function ChatScreen({ navigation, route }: Props) {
 	const { name, id } = route.params;
@@ -26,36 +31,23 @@ export default function ChatScreen({ navigation, route }: Props) {
 	const [message, setMessage] = React.useState<string>("");
 	const { username } = useStore();
 	const inset = useSafeAreaInsets();
-	const headerHeight = useHeaderHeight();
+	// const headerHeight = useHeaderHeight();
+	// const [textInputHeight, setTextInputHeight] = React.useState<number>(0);
+	const flatListRef = React.useRef<FlatList>(null);
 
-	const [chatMessages, setChatMessages] = React.useState<ChatMessage[]>([
-		{
-			id: "1",
-			text: "Hello guys, welcome!",
-			time: "07:50",
-			user: "John",
-		},
-		{
-			id: "2",
-			text: "Hi John, thank you! 😇",
-			time: "08:50",
-			user: "Dee",
-		},
-	]);
+	const [chatMessages, setChatMessages] = React.useState<ChatMessage[]>([]);
 
 	const handleNewMessage = () => {
 		if (!message.trim()) return;
-		const hour =
-			new Date().getHours() < 10 ? `0${new Date().getHours()}` : `${new Date().getHours()}`;
 
-		const mins =
-			new Date().getMinutes() < 10 ? `0${new Date().getMinutes()}` : `${new Date().getMinutes()}`;
-
-		console.log({
+		socket.emit("newMessage", {
 			message,
+			group_id: id,
 			user: username,
-			timestamp: { hour, mins },
+			timestamp: new Date(),
 		});
+
+		setMessage("");
 	};
 
 	React.useEffect(() => {
@@ -65,11 +57,20 @@ export default function ChatScreen({ navigation, route }: Props) {
 			headerStyle: { backgroundColor: theme.background },
 			headerLeft: (props) => (
 				<TouchableOpacity onPress={() => navigation.goBack()}>
-					<Icon name="arrow-back-ios" size={20} color={theme.text} />
+					<Icon name="arrow-back" size={24} color={theme.text} />
 				</TouchableOpacity>
 			),
 		});
 	}, [navigation]);
+
+	React.useEffect(() => {
+		socket.emit("findGroup", id);
+		socket.on("foundGroup", (groupChats) => setChatMessages(groupChats));
+	}, []);
+
+	React.useEffect(() => {
+		socket.on("foundGroup", (groupChats) => setChatMessages(groupChats));
+	}, [socket]);
 
 	return (
 		<>
@@ -77,16 +78,18 @@ export default function ChatScreen({ navigation, route }: Props) {
 			<KeyboardAvoidingView
 				style={{ flex: 1, backgroundColor: theme.background }}
 				behavior="padding"
-				keyboardVerticalOffset={Platform.OS === "android" ? -200 : headerHeight}
+				keyboardVerticalOffset={Platform.OS === "android" ? -200 : 80}
 				enabled
 			>
 				<FlatList
+					ref={flatListRef}
 					data={chatMessages}
 					keyExtractor={(item) => item.id}
 					renderItem={({ item }) => <MessageTile chat={item} />}
 					style={{ backgroundColor: theme.background }}
 					contentContainerStyle={styles.container}
 					scrollEnabled={chatMessages.length > 0}
+					onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}
 				/>
 
 				<View style={[styles.footer, { paddingBottom: inset.bottom }]}>
@@ -98,6 +101,7 @@ export default function ChatScreen({ navigation, route }: Props) {
 						onChangeText={(text) => setMessage(text)}
 						onSend={handleNewMessage}
 						// textAlignVertical="top"
+						// containerStyle={{ height: Math.max(48, textInputHeight) }}
 					/>
 				</View>
 			</KeyboardAvoidingView>

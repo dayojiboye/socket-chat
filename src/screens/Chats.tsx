@@ -13,7 +13,6 @@ import { appState } from "../enums";
 import axios from "axios";
 import { getErrorMessage } from "../utils/helpers";
 import socket from "../utils/socket";
-import dummyChats from "../data";
 
 type Props = StackScreenProps<RootStackParamList>;
 
@@ -26,7 +25,7 @@ export default function Chats({ navigation }: Props) {
 	const _fetchGroups = async () => {
 		setCurrentState(appState.LOADING);
 		try {
-			const response = await axios.get("http://localhost:4000/api");
+			const response = await axios.get("http://172.20.10.3:4000/api");
 			const { status, data } = response || {};
 			if (status === 200) {
 				setCurrentState(appState.SUCCESS);
@@ -34,9 +33,14 @@ export default function Chats({ navigation }: Props) {
 			}
 		} catch (err) {
 			setCurrentState(appState.ERROR);
+			console.log(err);
 			__DEV__ && console.log(getErrorMessage(err));
 		}
 	};
+
+	React.useEffect(() => {
+		_fetchGroups();
+	}, []);
 
 	React.useEffect(() => {
 		navigation.setOptions({
@@ -49,10 +53,6 @@ export default function Chats({ navigation }: Props) {
 	}, [navigation]);
 
 	React.useEffect(() => {
-		_fetchGroups();
-	}, []);
-
-	React.useEffect(() => {
 		socket.on("groupsList", (groups) => {
 			setGroups(groups);
 		});
@@ -61,36 +61,39 @@ export default function Chats({ navigation }: Props) {
 	return (
 		<>
 			<CustomStatusBar />
-			<View style={{ flex: 1 }}>
-				<ScrollView
-					style={{ flex: 1, backgroundColor: theme.background }}
-					contentContainerStyle={styles.container}
-					// scrollEnabled={groups.length > 0}
-				>
-					{currentState === appState.LOADING ? (
-						<ActivityIndicator animating size="large" />
-					) : dummyChats.length > 0 ? (
-						dummyChats.map((chat) => (
-							<ChatTile
-								key={chat.id}
-								item={chat}
-								onPress={() => navigation.navigate("ChatScreen", { name: chat.name, id: chat.id })}
-							/>
-						))
-					) : (
-						<View style={styles.emptyView}>
-							<Text style={styles.emptyText}>No chat</Text>
-						</View>
-					)}
-				</ScrollView>
-				<TouchableOpacity
-					activeOpacity={0.6}
-					style={styles.floatingButton}
-					onPress={() => createGroupBottomSheetRef.current?.present()}
-				>
-					<PlusIcon color={theme.blue} size={36} />
-				</TouchableOpacity>
-			</View>
+			<ScrollView
+				style={{ flex: 1, backgroundColor: theme.background }}
+				contentContainerStyle={styles.container}
+				scrollEnabled={groups.length > 0}
+			>
+				{currentState === appState.LOADING ? (
+					<ActivityIndicator animating size="large" />
+				) : groups.length > 0 ? (
+					groups.map((chat) => (
+						<ChatTile
+							key={chat.id}
+							item={chat}
+							onPress={() =>
+								navigation.navigate("ChatScreen", {
+									name: chat.name,
+									id: chat.id,
+								})
+							}
+						/>
+					))
+				) : (
+					<View style={styles.emptyView}>
+						<Text style={styles.emptyText}>No chat</Text>
+					</View>
+				)}
+			</ScrollView>
+			<TouchableOpacity
+				activeOpacity={0.6}
+				style={styles.floatingButton}
+				onPress={() => createGroupBottomSheetRef.current?.present()}
+			>
+				<PlusIcon color={theme.blue} size={36} />
+			</TouchableOpacity>
 			<CreateGroupBottomSheet ref={createGroupBottomSheetRef} />
 		</>
 	);

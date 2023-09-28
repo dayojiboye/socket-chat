@@ -1,13 +1,13 @@
-import { Keyboard, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import React from "react";
 import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AppBottomSheet from ".";
 import { StyleSheet } from "react-native";
 import { ThemeType } from "../../types";
 import useStyles from "../../hooks/useStyles";
-import CustomTextInput from "../CustomTextInput";
 import CustomButton from "../CustomButton";
 import socket from "../../utils/socket";
+import CustomTextInput from "../CustomTextInput";
 
 type Props = {};
 
@@ -19,43 +19,16 @@ const CreateGroupBottomSheet = React.forwardRef(
 			setGroupName("");
 		}, []);
 
-		const defaultSnapPoints = ["45%"];
 		const { styles } = useStyles(createStyles);
 		const [groupName, setGroupName] = React.useState<string>("");
-		const [snapPoints, setSnapPoints] = React.useState(defaultSnapPoints);
 
 		const handleCreateRoom = () => {
 			socket.emit("createGroup", groupName);
 			closeBottomsheet();
 		};
 
-		React.useEffect(() => {
-			const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
-				setSnapPoints(["70%"]);
-			});
-
-			const keyboardWillShowListener = Keyboard.addListener("keyboardWillShow", () => {
-				setSnapPoints(["70%"]);
-			});
-
-			const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
-				setSnapPoints(defaultSnapPoints);
-			});
-
-			const keyboardWillHideListener = Keyboard.addListener("keyboardWillHide", () => {
-				setSnapPoints(defaultSnapPoints);
-			});
-
-			return () => {
-				keyboardDidShowListener.remove();
-				keyboardWillShowListener.remove();
-				keyboardDidHideListener.remove();
-				keyboardWillHideListener.remove();
-			};
-		}, []);
-
 		return (
-			<AppBottomSheet ref={ref} snapPoints={snapPoints} closeBottomsheet={closeBottomsheet}>
+			<AppBottomSheet ref={ref} snapPoints={["36%"]} closeBottomsheet={closeBottomsheet}>
 				<View style={styles.header}>
 					<Text style={styles.headingText}>Enter group name</Text>
 				</View>
@@ -68,6 +41,7 @@ const CreateGroupBottomSheet = React.forwardRef(
 						autoFocus
 						placeholder="Group name"
 						onChangeText={(text) => setGroupName(text)}
+						isBottomSheet
 					/>
 					<CustomButton label="Create" disabled={groupName.length < 3} onPress={handleCreateRoom} />
 				</ScrollView>

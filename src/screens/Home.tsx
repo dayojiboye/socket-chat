@@ -41,10 +41,7 @@ export default function Home({ navigation }: Props) {
 						disabled={!username || username.length < 3}
 						label="Continue"
 						style={{ marginTop: 20 }}
-						onPress={() => {
-							setUserName(username);
-							navigation.replace("Chats");
-						}}
+						onPress={() => setUserName(username)}
 					/>
 				</KeyboardAwareScrollView>
 			</SafeAreaView>
