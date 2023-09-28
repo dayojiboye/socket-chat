@@ -34,6 +34,7 @@ export default function ChatScreen({ navigation, route }: Props) {
 	// const headerHeight = useHeaderHeight();
 	// const [textInputHeight, setTextInputHeight] = React.useState<number>(0);
 	const flatListRef = React.useRef<FlatList>(null);
+	const [typingStatus, setTypingStatus] = React.useState<string>("");
 
 	const [chatMessages, setChatMessages] = React.useState<ChatMessage[]>([]);
 
@@ -48,6 +49,12 @@ export default function ChatScreen({ navigation, route }: Props) {
 		});
 
 		setMessage("");
+	};
+
+	const handleTyping = () => {
+		if (message.trim())
+			socket.emit("typing", { typingText: `${username} is typing...`, group_id: id });
+		else socket.emit("typing", { typingText: "", group_id: id });
 	};
 
 	React.useEffect(() => {
@@ -70,7 +77,16 @@ export default function ChatScreen({ navigation, route }: Props) {
 
 	React.useEffect(() => {
 		socket.on("foundGroup", (groupChats) => setChatMessages(groupChats));
+		socket.on("typing", (data) => {
+			if (data.group_id === id) setTypingStatus(data.typingText);
+		});
 	}, [socket]);
+
+	// Debounce
+	React.useEffect(() => {
+		const delayDebounceFn = setTimeout(() => handleTyping(), 500);
+		return () => clearTimeout(delayDebounceFn);
+	}, [message]);
 
 	return (
 		<>
@@ -88,7 +104,7 @@ export default function ChatScreen({ navigation, route }: Props) {
 					renderItem={({ item }) => <MessageTile chat={item} />}
 					style={{ backgroundColor: theme.background }}
 					contentContainerStyle={styles.container}
-					scrollEnabled={chatMessages.length > 0}
+					scrollEnabled={chatMessages?.length > 0}
 					onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}
 				/>
 

@@ -23,7 +23,7 @@ const CreateGroupBottomSheet = React.forwardRef(
 		const [groupName, setGroupName] = React.useState<string>("");
 
 		const handleCreateRoom = () => {
-			socket.emit("createGroup", groupName);
+			socket.emit("createGroup", groupName.trim());
 			closeBottomsheet();
 		};
 

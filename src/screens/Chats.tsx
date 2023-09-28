@@ -1,6 +1,6 @@
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { ChatItemsType, RootStackParamList, ThemeType } from "../types";
+import { ChatItemsType, RootStackParamList, ThemeType, TypingResponse } from "../types";
 import useStyles from "../hooks/useStyles";
 import CustomStatusBar from "../components/CustomStatusBar";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -21,6 +21,7 @@ export default function Chats({ navigation }: Props) {
 	const createGroupBottomSheetRef = React.useRef<BottomSheetModal>(null);
 	const [groups, setGroups] = React.useState<ChatItemsType>([]);
 	const [currentState, setCurrentState] = React.useState<appState>(appState.IDLE);
+	const [typingStatus, setTypingStatus] = React.useState<TypingResponse>();
 
 	const _fetchGroups = async () => {
 		setCurrentState(appState.LOADING);
@@ -33,7 +34,6 @@ export default function Chats({ navigation }: Props) {
 			}
 		} catch (err) {
 			setCurrentState(appState.ERROR);
-			console.log(err);
 			__DEV__ && console.log(getErrorMessage(err));
 		}
 	};
@@ -56,6 +56,9 @@ export default function Chats({ navigation }: Props) {
 		socket.on("groupsList", (groups) => {
 			setGroups(groups);
 		});
+		socket.on("typing", (data) => {
+			setTypingStatus(data);
+		});
 	}, [socket]);
 
 	return (
@@ -73,6 +76,7 @@ export default function Chats({ navigation }: Props) {
 						<ChatTile
 							key={chat.id}
 							item={chat}
+							typingStatus={typingStatus}
 							onPress={() =>
 								navigation.navigate("ChatScreen", {
 									name: chat.name,

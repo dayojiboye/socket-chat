@@ -26,3 +26,10 @@ export type ChatItemType = {
 };
 
 export type ChatItemsType = ChatItemType[];
+
+export type TypingResponse =
+	| {
+			typingText: string;
+			group_id: string;
+	  }
+	| undefined;
