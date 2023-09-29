@@ -4,6 +4,7 @@ import { ChatItemType, ChatMessage, ThemeType, TypingResponse } from "../../type
 import useStyles from "../../hooks/useStyles";
 import { UserCircleIcon } from "react-native-heroicons/outline";
 import TimeAgo from "javascript-time-ago";
+import useStore from "../../hooks/useStore";
 
 type Props = {
 	item: ChatItemType;
@@ -15,8 +16,11 @@ type Props = {
 export default function ChatTile({ item, style, onPress, typingStatus }: Props) {
 	const { styles, theme } = useStyles(createStyles);
 	const [messages, setMessages] = React.useState<ChatMessage>();
+	const { username } = useStore();
 
-	const timeAgo = new TimeAgo("en-US");
+	const timeAgo = new TimeAgo("en");
+	const noMessage = !messages?.text;
+	const isSomeoneTypingInGroup = typingStatus?.group_id === item.id && !!typingStatus.typingText;
 
 	React.useLayoutEffect(() => {
 		setMessages(item.messages[item.messages.length - 1]);
@@ -29,21 +33,24 @@ export default function ChatTile({ item, style, onPress, typingStatus }: Props) 
 			</View>
 			<View style={styles.contentContainer}>
 				<View style={{ gap: 4, flex: 1 }}>
-					<Text style={styles.recipient}>{item.name}</Text>
+					<Text style={styles.groupName}>{item.name}</Text>
 					<Text
 						numberOfLines={2}
 						style={[
 							styles.message,
 							{
-								color: typingStatus ? theme.faded : theme.text,
-								fontStyle: typingStatus ? "italic" : "normal",
+								color: isSomeoneTypingInGroup || noMessage ? theme.faded : theme.text,
+								fontStyle: isSomeoneTypingInGroup || noMessage ? "italic" : "normal",
 							},
 						]}
 					>
-						{messages?.user && !typingStatus ? messages.user + ":" : null}{" "}
-						{typingStatus?.group_id === item.id && typingStatus && typingStatus.typingText
+						{isSomeoneTypingInGroup
 							? typingStatus.typingText
-							: messages?.text}
+							: messages?.user && messages.text
+							? `${messages.user === username ? "You" : messages.user}: ${messages.text}`
+							: noMessage
+							? "No message, start a conversation"
+							: null}
 					</Text>
 				</View>
 				{messages?.time ? (
@@ -71,13 +78,13 @@ const createStyles = (theme: ThemeType) =>
 			justifyContent: "space-between",
 			gap: 8,
 		},
-		recipient: {
+		groupName: {
 			color: theme.text,
 			fontSize: 16,
 			fontWeight: "600",
+			width: 200,
 		},
 		message: {
-			// color: theme.text,
 			fontSize: 12,
 		},
 		timestamp: {

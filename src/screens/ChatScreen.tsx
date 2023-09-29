@@ -6,9 +6,10 @@ import {
 	KeyboardAvoidingView,
 	Platform,
 	Dimensions,
+	Text,
 } from "react-native";
 import React from "react";
-import { ChatMessage, RootStackParamList, ThemeType } from "../types";
+import { ChatMessage, RootStackParamList, ThemeType, TypingResponse } from "../types";
 import useStyles from "../hooks/useStyles";
 import { StackScreenProps } from "@react-navigation/stack";
 import CustomStatusBar from "../components/CustomStatusBar";
@@ -34,7 +35,7 @@ export default function ChatScreen({ navigation, route }: Props) {
 	// const headerHeight = useHeaderHeight();
 	// const [textInputHeight, setTextInputHeight] = React.useState<number>(0);
 	const flatListRef = React.useRef<FlatList>(null);
-	const [typingStatus, setTypingStatus] = React.useState<string>("");
+	const [typingStatus, setTypingStatus] = React.useState<TypingResponse>();
 
 	const [chatMessages, setChatMessages] = React.useState<ChatMessage[]>([]);
 
@@ -59,16 +60,24 @@ export default function ChatScreen({ navigation, route }: Props) {
 
 	React.useEffect(() => {
 		navigation.setOptions({
-			title: name,
-			headerTitleStyle: styles.headerTitle,
 			headerStyle: { backgroundColor: theme.background },
 			headerLeft: (props) => (
 				<TouchableOpacity onPress={() => navigation.goBack()}>
 					<Icon name="arrow-back" size={24} color={theme.text} />
 				</TouchableOpacity>
 			),
+			headerTitle: (props) => (
+				<View style={styles.headerTitleContainer}>
+					<Text numberOfLines={2} style={styles.headerTitle}>
+						{name}
+					</Text>
+					{typingStatus?.typingText ? (
+						<Text style={styles.typingText}>{typingStatus.typingText}</Text>
+					) : null}
+				</View>
+			),
 		});
-	}, [navigation]);
+	}, [navigation, typingStatus]);
 
 	React.useEffect(() => {
 		socket.emit("findGroup", id);
@@ -78,7 +87,7 @@ export default function ChatScreen({ navigation, route }: Props) {
 	React.useEffect(() => {
 		socket.on("foundGroup", (groupChats) => setChatMessages(groupChats));
 		socket.on("typing", (data) => {
-			if (data.group_id === id) setTypingStatus(data.typingText);
+			if (data.group_id === id) setTypingStatus(data);
 		});
 	}, [socket]);
 
@@ -127,10 +136,15 @@ export default function ChatScreen({ navigation, route }: Props) {
 
 const createStyles = (theme: ThemeType) =>
 	StyleSheet.create({
+		headerTitleContainer: {
+			alignItems: "center",
+		},
 		headerTitle: {
 			color: theme.text,
 			fontSize: 18,
 			fontWeight: "700",
+			textAlign: "center",
+			maxWidth: 240,
 		},
 		container: {
 			paddingTop: 20,
@@ -142,5 +156,12 @@ const createStyles = (theme: ThemeType) =>
 			paddingHorizontal: 20,
 			paddingVertical: 16,
 			backgroundColor: theme.background,
+		},
+		typingText: {
+			color: theme.text,
+			fontSize: 13,
+			fontStyle: "italic",
+			textAlign: "center",
+			marginTop: 2,
 		},
 	});

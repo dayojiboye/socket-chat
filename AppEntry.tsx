@@ -63,8 +63,8 @@ export default function AppEntry() {
 		socket.connect();
 		// Make any initial API call here like fetching signed in user's data
 		return () => {
-			// socket.disconnect();
-			socket.emit("disconnect");
+			socket.disconnect();
+			// socket.emit("disconnect");
 		};
 	}, []);
 

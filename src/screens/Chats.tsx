@@ -26,7 +26,7 @@ export default function Chats({ navigation }: Props) {
 	const _fetchGroups = async () => {
 		setCurrentState(appState.LOADING);
 		try {
-			const response = await axios.get("http://172.20.10.3:4000/api");
+			const response = await axios.get("http://172.20.10.3:4000/groups");
 			const { status, data } = response || {};
 			if (status === 200) {
 				setCurrentState(appState.SUCCESS);
@@ -87,7 +87,9 @@ export default function Chats({ navigation }: Props) {
 					))
 				) : (
 					<View style={styles.emptyView}>
-						<Text style={styles.emptyText}>No chat</Text>
+						<Text style={styles.emptyText}>
+							No group created, you can create one by tapping on the "+" button
+						</Text>
 					</View>
 				)}
 			</ScrollView>
@@ -123,8 +125,9 @@ const createStyles = (theme: ThemeType) =>
 		emptyText: {
 			fontWeight: "500",
 			color: theme.faded,
-			fontSize: 18,
+			fontSize: 16,
 			textAlign: "center",
+			lineHeight: 24,
 		},
 		floatingButton: {
 			position: "absolute",

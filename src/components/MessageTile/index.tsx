@@ -14,11 +14,11 @@ export default function MessageTile({ chat }: Props) {
 	const { username } = useStore();
 
 	const isMe: boolean = chat.user === username;
-	const timeAgo = new TimeAgo("en-US");
+	const timeAgo = new TimeAgo("en");
 
 	return (
 		<View style={[styles.container, { alignItems: isMe ? "flex-end" : "flex-start" }]}>
-			<Text style={styles.username}>{isMe ? "Me" : chat.user}</Text>
+			<Text style={styles.username}>{isMe ? "You" : chat.user}</Text>
 			<View
 				style={[
 					styles.chatBubble,
