@@ -26,7 +26,7 @@ export default function Chats({ navigation }: Props) {
 	const _fetchGroups = async () => {
 		setCurrentState(appState.LOADING);
 		try {
-			const response = await axios.get("http://172.20.10.3:4000/groups");
+			const response = await axios.get("http://localhost:4000/groups");
 			const { status, data } = response || {};
 			if (status === 200) {
 				setCurrentState(appState.SUCCESS);
