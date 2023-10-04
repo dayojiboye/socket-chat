@@ -13,6 +13,7 @@ import { appState } from "../enums";
 import axios from "axios";
 import { getErrorMessage } from "../utils/helpers";
 import socket from "../utils/socket";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = StackScreenProps<RootStackParamList>;
 
@@ -22,6 +23,7 @@ export default function Chats({ navigation }: Props) {
 	const [groups, setGroups] = React.useState<ChatItemsType>([]);
 	const [currentState, setCurrentState] = React.useState<appState>(appState.IDLE);
 	const [typingStatus, setTypingStatus] = React.useState<TypingResponse>();
+	const inset = useSafeAreaInsets();
 
 	const _fetchGroups = async () => {
 		setCurrentState(appState.LOADING);
@@ -95,7 +97,7 @@ export default function Chats({ navigation }: Props) {
 			</ScrollView>
 			<TouchableOpacity
 				activeOpacity={0.6}
-				style={styles.floatingButton}
+				style={[styles.floatingButton, { bottom: inset.bottom }]}
 				onPress={() => createGroupBottomSheetRef.current?.present()}
 			>
 				<PlusIcon color={theme.blue} size={36} />
@@ -131,7 +133,6 @@ const createStyles = (theme: ThemeType) =>
 		},
 		floatingButton: {
 			position: "absolute",
-			bottom: 60,
 			right: 20,
 			width: 60,
 			height: 60,

@@ -28,7 +28,13 @@ const CreateGroupBottomSheet = React.forwardRef(
 		};
 
 		return (
-			<AppBottomSheet ref={ref} snapPoints={["36%"]} closeBottomsheet={closeBottomsheet}>
+			<AppBottomSheet
+				ref={ref}
+				snapPoints={["57%", 300]}
+				closeBottomsheet={closeBottomsheet}
+				android_keyboardInputMode="adjustResize"
+				keyboardBlurBehavior="restore"
+			>
 				<View style={styles.header}>
 					<Text style={styles.headingText}>Enter group name</Text>
 				</View>

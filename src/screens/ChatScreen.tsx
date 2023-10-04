@@ -103,7 +103,7 @@ export default function ChatScreen({ navigation, route }: Props) {
 			<KeyboardAvoidingView
 				style={{ flex: 1, backgroundColor: theme.background }}
 				behavior="padding"
-				keyboardVerticalOffset={Platform.OS === "android" ? -200 : 80}
+				keyboardVerticalOffset={Platform.OS === "android" ? -220 : 80}
 				enabled
 			>
 				<FlatList
